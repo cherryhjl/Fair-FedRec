@@ -59,8 +59,8 @@ def train_fcf_bc_sign(users_num, items_num, train_samples, neg_samples, valid_sa
         os.makedirs(path_dir, exist_ok=True)
 
     agg = Aggregator(users_num, items_num, providers_num)
-    model = SignModel(users_num, items_num).cuda()
-    cp_model = SignModel(users_num, items_num).cuda()
+    model = SignModel(users_num, items_num)# .cuda()
+    cp_model = SignModel(users_num, items_num)# .cuda()
 
     loss_all = [0 for i in range(users_num)]
     alpha_all = [0 for i in range(users_num)]

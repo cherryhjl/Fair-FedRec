@@ -1,12 +1,7 @@
 import numpy as np
 from tqdm import tqdm
 from sklearn.metrics import roc_auc_score, f1_score
-'''
-    测量函数调用
-'''
 
-
-# y_true按得分排序后，计算前k个 它的值除以log2（位置+1）
 def dcg_score(y_true, y_score, k=10):
     order = np.argsort(y_score)[::-1]
     y_true = np.take(y_true, order[:k])
@@ -14,17 +9,12 @@ def dcg_score(y_true, y_score, k=10):
     discounts = np.log2(np.arange(len(y_true)) + 2)
     return np.sum(gains / discounts)
 
-
-# 上述dcg除以最好的情况
 def ndcg_score(y_true, y_score, k=10):
     best = dcg_score(y_true, y_true, k)
     actual = dcg_score(y_true, y_score, k)
     return actual / best
 
-
-# 按照预测进行排序后，平均每个y_true值除以所在位置
 def mrr_score(y_true, y_score):
-    # order表示从大到小排列，y_true表示采用相同的排序
     order = np.argsort(y_score)[::-1]
     y_true = np.take(y_true, order)
     rr_score = y_true / (np.arange(len(y_true)) + 1)
@@ -32,8 +22,6 @@ def mrr_score(y_true, y_score):
 
 
 def compute_amn(y_true, y_score):
-    # auc表示有m个负样本，n个正样本，随机抽取一对样本（一正一负），
-    # 预测这一对中正样本概率和负样本概率哪个大，正》负=1，正=负为0.5，否则为0
     auc = roc_auc_score(y_true,y_score)
     mrr = mrr_score(y_true,y_score)
     ndcg5 = ndcg_score(y_true,y_score,5)

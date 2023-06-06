@@ -16,6 +16,7 @@ def newsample(nnn, ratio):
 
 if __name__ == '__main__':
 
+    # os.environ['CUDA_VISIBLE_DEVICES'] = '1'
     random.seed(0)
     np.random.seed(0)
 

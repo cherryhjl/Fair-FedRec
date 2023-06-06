@@ -3,11 +3,6 @@ import random
 import math
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
-'''
-    数据加载类
-    训练集：1个积极+4个消极
-    测试集：有积极有消极，一条条选
-'''
 
 
 class TrainDataset(Dataset):

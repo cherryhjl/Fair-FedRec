@@ -3,19 +3,13 @@ from torch.utils.data import Dataset, DataLoader
 from torch import nn
 import torch.optim as optim
 import torch.nn.functional as F
-'''
-    模型类
-'''
 
-
-# 正常模型训练
 class ModelTrain(nn.Module):
     def __init__(self, users_num, items_num):
         super(ModelTrain, self).__init__()
         self.items_embeddings = nn.Embedding(items_num + 1, 100)
         self.user_embeddings = nn.Embedding(users_num + 1, 100)
         self.criterion = nn.CrossEntropyLoss()
-        # lam从0.1，1，2中选
         self.lmbda = 0.8
 
     def get_score(self, uid, nid):
@@ -38,7 +32,6 @@ class ModelTrain(nn.Module):
             return scores
 
 
-# 加入λ模型训练
 class Model(nn.Module):
     def __init__(self, users_num, items_num):
         super(Model, self).__init__()
@@ -48,7 +41,6 @@ class Model(nn.Module):
         # lam从0.1，1，2中选
         self.lmbda = 0.8
 
-    # 计算二范数
     def model_dist_norm_var(self, agg, norm=2):
         size = 0
         for layer in self.parameters():
@@ -62,7 +54,6 @@ class Model(nn.Module):
             size += p[name].view(-1).shape[0]
         return torch.norm(sum_var, norm)
 
-    # 验证，测试
     def get_score(self, uid, nid):
         user_vec = self.user_embeddings(uid.long())
         news_vec = self.items_embeddings(nid.long())
@@ -70,8 +61,7 @@ class Model(nn.Module):
         score = torch.bmm(news_vec.unsqueeze(-2), user_vec.unsqueeze(-1)).squeeze(dim=-1).squeeze(dim=-1)
 
         return score
-
-    # 训练
+    
     def forward(self, uid, nid, targets, agg, lam, compute_loss_lam=True):
         user_vec = self.user_embeddings(uid.long())
         news_vec = self.items_embeddings(nid.long())
@@ -86,18 +76,14 @@ class Model(nn.Module):
             loss = self.criterion(scores, targets.long())
             return loss
 
-
-# 加入sign函数加权模型训练
 class SignModel(nn.Module):
     def __init__(self, users_num, items_num):
         super(SignModel, self).__init__()
         self.items_embeddings = nn.Embedding(items_num + 1, 100)
         self.user_embeddings = nn.Embedding(users_num + 1, 100)
         self.criterion = nn.CrossEntropyLoss()
-        # lam从0.1，1，2中选
         self.lmbda = 0.8
 
-    # 计算二范数
     def model_dist_norm_var(self, agg, norm=2):
         size = 0
         for layer in self.parameters():
@@ -111,7 +97,6 @@ class SignModel(nn.Module):
             size += p[name].view(-1).shape[0]
         return torch.norm(sum_var, norm)
 
-    # 验证，测试
     def get_score(self, uid, nid):
         user_vec = self.user_embeddings(uid.long())
         news_vec = self.items_embeddings(nid.long())
@@ -120,7 +105,6 @@ class SignModel(nn.Module):
 
         return score
 
-    # 训练
     def forward(self, uid, nid, targets, agg, lam, r, compute_loss_lam=True):
         user_vec = self.user_embeddings(uid.long())
         news_vec = self.items_embeddings(nid.long())

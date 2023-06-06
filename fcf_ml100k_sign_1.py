@@ -146,8 +146,8 @@ def train_fcf_ml100k_sign(users_num, items_num, train_samples, neg_samples, vali
                 model.load_state_dict(model_para)
                 with torch.no_grad():
                     uid, nid, label = valid_ds.split_all()
-                    uid = uid.cuda()
-                    nid = nid.cuda()
+                    uid = uid # .cuda()
+                    nid = nid # .cuda()
                     preds = model.get_score(uid, nid).detach().cpu().numpy()
                     val_preds.append(preds)
                     val_labels.append(label.numpy())

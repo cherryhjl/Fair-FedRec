@@ -2,9 +2,7 @@ import torch
 from model import Model
 import numpy as np
 
-'''
-    聚合类
-'''
+
 class Aggregator:
     def __init__(self, users_num, items_num, providers_num):
         self.model = Model(users_num, items_num)
@@ -29,7 +27,6 @@ class Aggregator:
         self.model.load_state_dict(state_dict_ue)
 
     def collect(self, model_params, sample_num):
-        # sample_num表示每一批用户数量，self.user_sample表示总用户数（1轮），self.user_cnt表示有几批
         self.user_sample += sample_num
         self.user_cnt += 1
 
